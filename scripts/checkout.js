@@ -1,4 +1,4 @@
-import { cart } from "../data/cart.js";
+import { cart,removeFromCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 
 let cartsummeryHTML='';
@@ -11,7 +11,7 @@ cart.forEach((cartItem)=>{
         }
     });
     
-cartsummeryHTML+= `<div class="cart-item-container">
+cartsummeryHTML+= `<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
             <div class="delivery-date">
               Delivery date: Tuesday, June 21
             </div>
@@ -34,7 +34,7 @@ cartsummeryHTML+= `<div class="cart-item-container">
                   <span class="update-quantity-link link-primary">
                     Update
                   </span>
-                  <span class="delete-quantity-link link-primary">
+                  <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${matchingProduct.id}">
                     Delete
                   </span>
                 </div>
@@ -86,5 +86,18 @@ cartsummeryHTML+= `<div class="cart-item-container">
               </div>
             </div>
           </div>`;
-    document.querySelector('.js-order-summery').innerHTML=cartsummeryHTML;
+    
+});
+document.querySelector('.js-order-summery').innerHTML=cartsummeryHTML;
+
+document.querySelectorAll('.js-delete-link')
+    .forEach((link)=>{
+        link.addEventListener('click',()=>{
+            const productId=link.dataset.productId;
+            removeFromCart(productId);
+            const container=document.querySelector(
+                `.js-cart-item-container-${productId}`
+            );
+            container.remove();
+        });
 });
